@@ -3,4 +3,4 @@
 ## Notes: Shows avoidance coefficient in item tooltip (for now, huehue)
 ## Author: null
 ## Version: 0.1
-ProtPalaOptimizer.lua
+TankGearOptimizer.lua
