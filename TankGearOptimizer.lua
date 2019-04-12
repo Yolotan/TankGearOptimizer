@@ -1,6 +1,5 @@
 local _G, pairs, tonumber
 = _G, pairs, tonumber
-
 local match = string.match
 local format = string.format
 
@@ -56,34 +55,55 @@ local function round(num, numDecimalPlaces)
     return math.floor(num * mult + 0.5) / mult
 end
 
-local function OnTipSetItem(tip, name)
+local function OnTipSetItem(tip)
+
+    local textLeft = tip.textLeft
+    if not textLeft then
+        local tooltipName = tip:GetName()
+        textLeft = setmetatable({}, {
+            __index = function(t, i)
+                local line = _G[tooltipName .. "TextLeft" .. i]
+                t[i] = line
+                return line
+            end
+        })
+        tip.textLeft = textLeft
+    end
+
     local totalAvoidance = 0
     local totalStamina = 0
     for i = 1, tip:NumLines() do
-        local obj = _G[format("%sTextLeft%s", name, i)]
-        local text = obj:GetText()
 
-        local staminaLine = match(text, "(%d+) Stamina")
-        if staminaLine then
-            local stamValue = tonumber(format("%s.", staminaLine))
-            totalStamina = totalStamina + stamValue
-            --            obj:SetText(stamValue)
+        local line = textLeft[i]
+        local text = line:GetText()
+        local r, g, b = line:GetTextColor()
 
-            --            ChatFrame1:AddMessage();
-        end
+        local isInactiveStat = r < 0.51 and g < 0.51 and b < 0.51
+        local isDurabilityLine = match(text, "Durability (%d+) / (%d+)")
+        local islevelRequirementLine = match(text, "Requires Level (%d+)")
+        local isSocketClickLine = match(text, "<Shift Right Click to Socket>")
 
-        for k, v in pairs(AvoidanceCases) do
-            local defStat = match(text, k)
-            if defStat then
-                local defStatNumber = tonumber(format("%s.", defStat))
-                local defStatValue = defStatNumber * v
-                totalAvoidance = totalAvoidance + defStatValue
-                --                obj:SetText(defStatValue)
+        if isInactiveStat or isDurabilityLine or islevelRequirementLine or isSocketClickLine then
+            line:SetText("")
+        else
+            local staminaLine = match(text, "(%d+) Stamina")
+            if staminaLine then
+                local stamValue = tonumber(format("%s.", staminaLine))
+                totalStamina = totalStamina + stamValue
+            end
+
+            for k, v in pairs(AvoidanceCases) do
+                local defStat = match(text, k)
+                if defStat then
+                    local defStatNumber = tonumber(format("%s.", defStat))
+                    local defStatValue = defStatNumber * v
+                    totalAvoidance = totalAvoidance + defStatValue
+                end
             end
         end
     end
     if totalAvoidance > 0 then
-        tip:AddLine(format("Total Avoidance: %s%%",totalAvoidance))
+        tip:AddLine(format("Total Avoidance: %s%%", totalAvoidance))
     end
     if totalStamina > 0 then
         tip:AddLine(format("Total Stamina: %s", totalStamina))
