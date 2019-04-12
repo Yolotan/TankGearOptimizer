@@ -11,11 +11,32 @@ local itemtips = {
     ItemRefTooltip,
 }
 
+local AgiDodgeFactor = {
+    ['Druid'] = 0.068,
+    ['Hunter'] = 0.04,
+    ['Mage'] = 0.04,
+    ['Paladin'] = 0.04,
+    ['Priest'] = 0.04,
+    ['Rogue'] = 0.05,
+    ['Shaman'] = 0.04,
+    ['Warlock'] = 0.04,
+    ['Warrior'] = 0.033
+}
+
+local function getAgiFactorForClass()
+    local playerClass = UnitClass("player");
+    for k, v in pairs(AgiDodgeFactor) do
+        if playerClass == k then
+            return v
+        end
+    end
+end
+
 local parryFactor = 0.042
-local dodgeFactor = 0.052
-local blockFactor = 0.126
+local dodgeFactor = 0.053
+local blockFactor = 0.127
 local defFactor = 0.067
-local agiFactor = 0.037
+local agiFactor = getAgiFactorForClass()
 
 local AvoidanceCases = {
     ["Equip: Increases defense rating by (%d+)"] = defFactor,
@@ -46,6 +67,9 @@ local function OnTipSetItem(tip, name)
         if staminaLine then
             local stamValue = tonumber(format("%s.", staminaLine))
             totalStamina = totalStamina + stamValue
+            --            obj:SetText(stamValue)
+
+            --            ChatFrame1:AddMessage();
         end
 
         for k, v in pairs(AvoidanceCases) do
@@ -59,7 +83,7 @@ local function OnTipSetItem(tip, name)
         end
     end
     if totalAvoidance > 0 then
-        tip:AddLine(format("Total Avoidance: %s%%", round(totalAvoidance, 1)))
+        tip:AddLine(format("Total Avoidance: %s%%",totalAvoidance))
     end
     if totalStamina > 0 then
         tip:AddLine(format("Total Stamina: %s", totalStamina))
