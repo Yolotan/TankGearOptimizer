@@ -35,7 +35,7 @@ end
 local parryFactor = 0.042
 local dodgeFactor = 0.053
 local blockFactor = 0.127
-local defFactor = 0.067
+local defFactor = 0.068
 local agiFactor = getAgiFactorForClass()
 
 local AvoidanceCases = {
