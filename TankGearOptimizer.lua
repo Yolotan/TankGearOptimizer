@@ -76,28 +76,31 @@ local function OnTipSetItem(tip)
 
         local line = textLeft[i]
         local text = line:GetText()
-        local r, g, b = line:GetTextColor()
+        if (text) then
 
-        local isInactiveStat = r < 0.51 and g < 0.51 and b < 0.51
-        local isDurabilityLine = match(text, "Durability (%d+) / (%d+)")
-        local islevelRequirementLine = match(text, "Requires Level (%d+)")
-        local isSocketClickLine = match(text, "<Shift Right Click to Socket>")
+            local r, g, b = line:GetTextColor()
 
-        if isInactiveStat or isDurabilityLine or islevelRequirementLine or isSocketClickLine then
-            line:SetText("")
-        else
-            local staminaLine = match(text, "(%d+) Stamina")
-            if staminaLine then
-                local stamValue = tonumber(format("%s.", staminaLine))
-                totalStamina = totalStamina + stamValue
-            end
+            local isInactiveStat = r < 0.51 and g < 0.51 and b < 0.51
+            local isDurabilityLine = match(text, "Durability (%d+) / (%d+)")
+            local islevelRequirementLine = match(text, "Requires Level (%d+)")
+            local isSocketClickLine = match(text, "<Shift Right Click to Socket>")
 
-            for k, v in pairs(AvoidanceCases) do
-                local defStat = match(text, k)
-                if defStat then
-                    local defStatNumber = tonumber(format("%s.", defStat))
-                    local defStatValue = defStatNumber * v
-                    totalAvoidance = totalAvoidance + defStatValue
+            if isDurabilityLine or islevelRequirementLine or isSocketClickLine then
+                line:SetText("")
+            else
+                local staminaLine = match(text, "(%d+) Stamina")
+                if staminaLine and not isInactiveStat then
+                    local stamValue = tonumber(format("%s.", staminaLine))
+                    totalStamina = totalStamina + stamValue
+                end
+
+                for k, v in pairs(AvoidanceCases) do
+                    local defStat = match(text, k)
+                    if defStat and not isInactiveStat then
+                        local defStatNumber = tonumber(format("%s.", defStat))
+                        local defStatValue = defStatNumber * v
+                        totalAvoidance = totalAvoidance + defStatValue
+                    end
                 end
             end
         end
