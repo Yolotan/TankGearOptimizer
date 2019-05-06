@@ -79,11 +79,9 @@ local function OnTipSetItem(tip)
         if (text) then
 
             local r, g, b = line:GetTextColor()
-
             local isInactiveStat = r < 0.51 and g < 0.51 and b < 0.51
             local isDurabilityLine = match(text, "Durability (%d+) / (%d+)")
             local islevelRequirementLine = match(text, "Requires Level (%d+)")
-
             local isSocketClickLine = match(text, "<Shift Right Click to Socket>")
 
             if isDurabilityLine or (islevelRequirementLine and playerIs70) or isSocketClickLine then
@@ -112,9 +110,6 @@ local function OnTipSetItem(tip)
     if totalStamina > 0 then
         tip:AddLine(format("Total Stamina: %s", totalStamina))
     end
-    --if totalStamina > 0 and totalAvoidance > 0 then
-    --    tip:AddLine(format("Stamina/Avoidance factor: %s", round(totalStamina / totalAvoidance, 1)))
-    --end
 end
 
 local function OnSetItemRefTip()
