@@ -1,6 +1,6 @@
 ## Interface: 20400
 ## Title: Tank Gear Optimizer
 ## Notes: Shows avoidance coefficient in item tooltip (for now, huehue)
-## Author: null
-## Version: 0.1
+## Author: Sausagebum<NFA>
+## Version: 0.9
 TankGearOptimizer.lua
