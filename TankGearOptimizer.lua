@@ -112,9 +112,9 @@ local function OnTipSetItem(tip)
     if totalStamina > 0 then
         tip:AddLine(format("Total Stamina: %s", totalStamina))
     end
-    if totalStamina > 0 and totalAvoidance > 0 then
-        tip:AddLine(format("Stamina/Avoidance factor: %s", round(totalStamina / totalAvoidance, 1)))
-    end
+    --if totalStamina > 0 and totalAvoidance > 0 then
+    --    tip:AddLine(format("Stamina/Avoidance factor: %s", round(totalStamina / totalAvoidance, 1)))
+    --end
 end
 
 local function OnSetItemRefTip()
