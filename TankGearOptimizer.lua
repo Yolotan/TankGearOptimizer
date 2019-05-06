@@ -1,5 +1,4 @@
-local _G, pairs, tonumber
-= _G, pairs, tonumber
+local _G, pairs, tonumber = _G, pairs, tonumber
 local match = string.match
 local format = string.format
 
@@ -36,6 +35,7 @@ local dodgeFactor = 0.053
 local blockFactor = 0.127
 local defFactor = 0.068
 local agiFactor = getAgiFactorForClass()
+local playerIs70 = UnitLevel("player") == 70;
 
 local AvoidanceCases = {
     ["Equip: Increases defense rating by (%d+)"] = defFactor,
@@ -83,9 +83,10 @@ local function OnTipSetItem(tip)
             local isInactiveStat = r < 0.51 and g < 0.51 and b < 0.51
             local isDurabilityLine = match(text, "Durability (%d+) / (%d+)")
             local islevelRequirementLine = match(text, "Requires Level (%d+)")
+
             local isSocketClickLine = match(text, "<Shift Right Click to Socket>")
 
-            if isDurabilityLine or islevelRequirementLine or isSocketClickLine then
+            if isDurabilityLine or (islevelRequirementLine and playerIs70) or isSocketClickLine then
                 line:SetText("")
             else
                 local staminaLine = match(text, "(%d+) Stamina")
@@ -122,14 +123,20 @@ end
 
 for i = 1, #itemtips do
     local t = itemtips[i]
-    t:HookScript("OnTooltipSetItem", function(self) OnTipSetItem(self, self:GetName()) end)
+    t:HookScript("OnTooltipSetItem", function(self)
+        OnTipSetItem(self, self:GetName())
+    end)
 end
 
 if AtlasLootTooltip then
     if AtlasLootTooltip:GetScript("OnShow") then
-        AtlasLootTooltip:HookScript("OnShow", function(self) OnTipSetItem(self, self:GetName()) end)
+        AtlasLootTooltip:HookScript("OnShow", function(self)
+            OnTipSetItem(self, self:GetName())
+        end)
     else
-        AtlasLootTooltip:SetScript("OnShow", function(self) OnTipSetItem(self, self:GetName()) end)
+        AtlasLootTooltip:SetScript("OnShow", function(self)
+            OnTipSetItem(self, self:GetName())
+        end)
     end
 end
 
